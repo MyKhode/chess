@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SocketChess - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+  <!-- Main Container -->
+  <div class="min-h-screen flex flex-col justify-center items-center">
+    <!-- User Verification Form -->
+    <div id="verificationForm" class="w-full max-w-md bg-white shadow-lg rounded-lg p-8 mb-8">
+      <h2 class="text-2xl font-bold text-center text-gray-700 mb-4">User Verification</h2>
+      <form class="space-y-6">
+        <!-- User ID -->
+        <div>
+          <label class="block text-gray-700 font-bold mb-2" for="userId">User ID</label>
+          <input class="w-full px-3 py-2 border rounded shadow-sm focus:ring focus:ring-indigo-300" id="userId"
+            name="userId" type="password" placeholder="Secret Key" required />
+        </div>
+        <!-- Current Money -->
+        <div>
+          <label class="block text-gray-700 font-bold mb-2" for="currentMoney">Current Money</label>
+          <input class="w-full px-3 py-2 border rounded shadow-sm focus:ring focus:ring-indigo-300" id="currentMoney"
+            name="currentMoney" type="password" placeholder="CSV" required />
+          <!-- <p class="text-red-500 text-sm mt-1">Please enter the correct value.</p> -->
+        </div>
+        <!-- Buttons -->
+        <div class="flex justify-between items-center">
+          <button class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none"
+            type="button" onclick="verifyUser()">Log Account</button>
+          <a href="http://arena.ikhode.site/"
+            class="text-indigo-500 hover:text-indigo-700 text-sm font-bold">Forgot Credential?</a>
+        </div>
+      </form>
+      <p class="text-center text-gray-500 text-xs mt-6">
+        &copy; 2024 SocketChess. All rights reserved.
+      </p>
+    </div>
+
+    <!-- Chess Game Setup -->
+    <div id="gameSetup" class="w-full max-w-md bg-white shadow-lg rounded-lg p-8" style="display: none;">
+      <h1 class="text-2xl font-bold text-center text-gray-700 mb-4">Chess Game Setup</h1>
+      <form id="formMulti" action="/chess" class="space-y-6">
+        <!-- Username -->
+        <div>
+          <label class="block text-gray-700 font-bold mb-2" for="userName">Choose a Username</label>
+          <input class="w-full px-3 py-2 border rounded shadow-sm focus:ring focus:ring-indigo-300" id="userName"
+            name="userName" type="text" minlength="3" placeholder="Username" required />
+        </div>
+        <!-- Room Name -->
+        <div>
+          <label class="block text-gray-700 font-bold mb-2" for="roomName">Choose a Room Name</label>
+          <input class="w-full px-3 py-2 border rounded shadow-sm focus:ring focus:ring-indigo-300" id="roomName"
+            name="roomName" type="text" minlength="3" placeholder="Room Name" required />
+        </div>
+
+        <!-- Remove Session Button -->
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none"
+          type="button" onclick="removeSession()">Remove Session</button>
+
+        <!-- Tabs for Game Mode -->
+        <div class="flex justify-center space-x-4">
+          <button class="tablinks bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded"
+            onclick="switchTab(event, 'multiplayerTab')" id="multiplayerTabButton">Multiplayer</button>
+          <button class="tablinks bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded"
+            onclick="switchTab(event, 'singleplayerTab')" id="singleplayerTabButton">Singleplayer</button>
+        </div>
+
+        <!-- Multiplayer Tab -->
+        <div id="multiplayerTab" class="tabcontent mt-4">
+          <button class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            onclick="createRoom('multi')">Create Room</button>
+        </div>
+
+        <!-- Singleplayer Tab -->
+        <div id="singleplayerTab" class="tabcontent mt-4 hidden">
+          <div class="space-y-4">
+            <!-- Algorithm Selection -->
+            <div>
+              <label class="block text-gray-700 font-bold mb-2" for="Algorithm">Choose an Algorithm</label>
+              <select class="w-full px-3 py-2 border rounded shadow-sm focus:ring focus:ring-indigo-300"
+                name="algorithm" id="Algorithm" onchange="updateSingleplayerOptions()">
+                <option value="random" selected>Random</option>
+                <option value="negamax">Negamax</option>
+                <option value="negamax_a_b">Negamax-Alpha-Beta</option>
+                <option value="negamax_a_b_table">Negamax-Alpha-Beta Table</option>
+                <option value="negamax_a_b_quiescent">Negamax-Alpha-Beta Quiescent</option>
+                <option value="iterative_deepening">Iterative Deepening</option>
+                <option value="iterative_deepening_table">Iterative Deepening with Table</option>
+                <option value="iterative_deepening_order">Iterative Deepening with Ordering</option>
+              </select>
+            </div>
+
+            <!-- Depth Input (Hidden by default) -->
+            <div id="depthDiv" hidden>
+              <label class="block text-gray-700 font-bold mb-2" for="Depth">Choose a Depth</label>
+              <input class="w-full px-3 py-2 border rounded shadow-sm focus:ring focus:ring-indigo-300" name="depth"
+                id="Depth" type="number" min="0" max="10" placeholder="Depth" />
+            </div>
+
+            <!-- Time Input (Hidden by default) -->
+            <div id="timeDiv" hidden>
+              <label class="block text-gray-700 font-bold mb-2" for="Time">Choose a Time (ms)</label>
+              <input class="w-full px-3 py-2 border rounded shadow-sm focus:ring focus:ring-indigo-300" name="time"
+                id="Time" type="number" min="1" max="10000" placeholder="Time (ms)" />
+            </div>
+          </div>
+
+          <button class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            onclick="createRoom('single')">Create Room</button>
+        </div>
+      </form>
+
+      <!-- Join Existing Room -->
+      <h2 class="text-xl font-bold text-center text-gray-700 mt-8">Join an Existing Room</h2>
+      <table class="min-w-full mt-4 border-collapse border border-gray-200">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 border border-gray-300">Room Name</th>
+            <th class="px-4 py-2 border border-gray-300">White</th>
+            <th class="px-4 py-2 border border-gray-300">Black</th>
+            <th class="px-4 py-2 border border-gray-300">Spectators</th>
+            <th class="px-4 py-2 border border-gray-300"></th>
+          </tr>
+        </thead>
+        <tbody id="rows" class="text-center"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-8 text-center text-gray-500 text-sm">
+    Open source project available on
+    <a href="https://github.com/fratorgano/SocketChess" target="_blank"
+      class="font-bold text-indigo-500 hover:text-indigo-700">GitHub</a>
+    <br />
+    Made by <a href="https://fratorgano.me" target="_blank"
+      class="font-bold text-indigo-500 hover:text-indigo-700">Francesco Torgano</a> © 2024
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/scripts/index.js"></script>
+  <script src="/scripts/tabs.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./scripts/synchronize.js"> </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    document.getElementById("multiplayerTabButton").click();
+  </script>
+</body>
+
+</html>

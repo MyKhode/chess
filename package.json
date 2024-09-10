@@ -1,0 +1,31 @@
+{
+  "name": "socketchess",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "nodemon": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fratorgano (https://fratorgano.me)",
+  "repository": "github:fratorgano/SocketChess",
+  "license": "MIT",
+  "dependencies": {
+    "@chrisoakman/chessboardjs": "^1.0.0",
+    "@supabase/supabase-js": "^2.45.3",
+    "chess.js": "^0.12.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "seedrandom": "^3.0.5",
+    "socket.io": "^4.7.1",
+    "socket.io-client": "^4.7.5",
+    "socket.io-parser": ">=4.2.3",
+    "workerpool": "^6.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}
